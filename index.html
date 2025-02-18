@@ -10,22 +10,24 @@
 <body>
     <div class="container">
         <div class="create-account-container">
-            <form action="#">
+            <form action="#" >
                 <h1 id="myHead1" style="font-family: Funnel Sans SemiBold;color:black">Create Account</h1>
-                <input type="text" placeholder="Name" required /><br>
+                <input type="text" id = "name_1"placeholder="Name" required  /><br>
                 <br>
-                <input type="email" placeholder="Email" required /><br>
+                <input type="email" id="email_1" placeholder="Email" required /><br>
                 <br>
-                <input type="password" placeholder="Password" required minlength="6" /><br><br>
-                <button id="mySign1" style="font-family: Funnel Sans Medium;font-weight:600;font-size:larger;color:black">Sign Up</button>
+                <input type="password" id="password_1" placeholder="Password" required minlength="6" /><br><br>
+                <span id="errorMessage" style="color: red;"></span>
+                <button id="mySign1" style="font-family: Funnel Sans Medium;font-weight:600;font-size:larger;color:black" onclick="validateAndRedirect()">Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
             <form action="#">
                 <h1 id="myHead2" style="font-family: Funnel Sans SemiBold;color:black">Sign In</h1>
-                <input type="email" placeholder="Email" required /><br>
+                <input type="email"  placeholder="Email" required /><br>
                 <br>
-                <input type="password" placeholder="Password" required minlength="6" /><br><br>
+                <input type="password"  placeholder="Password" required minlength="6" /><br><br>
+                
                 <button id="mySign2" style="font-family: Funnel Sans Medium;font-weight:600;font-size:larger;color:black">Sign In</button>
             </form>
         </div>
