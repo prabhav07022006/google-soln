@@ -6,14 +6,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('background_1.jpg') no-repeat center center/cover;
+			background: url('background_1.jpg') no-repeat center center/cover;
     backdrop-filter: blur(10px);
     animation: fadeIn 1.5s ease-in-out;
 }
 
 .container {
     display: flex;
-    gap: 20px;
+			gap: 20px;
 }
 
 .create-account-container, .sign-in-container {
