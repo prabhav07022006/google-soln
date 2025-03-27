@@ -53,8 +53,9 @@ input[type="text"], input[type="email"], input[type="password"] {
 
 input:focus {
     outline: none;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
-    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
 }
 
 button {
