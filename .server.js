@@ -10,10 +10,11 @@ app.use(express.json());
 app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('/',(req,res) =>{
 
-    const htmlfile=path.join(__dirname,'index.html')
-    res.sendFile(htmlfile);
+app.set('view engine', 'ejs');
+
+app.get('/',(req,res) =>{
+	res.render('index_1')
 })  
 app.listen(4000,() => {
     console.log("Server is running");
