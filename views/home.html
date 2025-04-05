@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health Directory</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: white;
+      --text: #2c3e50;
+      --bubble-user: #d1eaff;
+      --bubble-bot: #f1f8e9;
+      --button: #2196f3;
+      --chip: #e3f2fd;
+      --chip-border: #64b5f6;
+    }
+
+    body.dark {
+      --bg: #1e1e1e;
+      --card: #2a2a2a;
+      --text: #f5f5f5;
+      --bubble-user: #1565c0;
+      --bubble-bot: #33691e;
+      --button: #42a5f5;
+      --chip: #263238;
+      --chip-border: #90caf9;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: -250px;
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-top: 60px;
+      color: white;
+      z-index: 1000;
+      background-color: rgba(51, 51, 51, 0.4);
+      backdrop-filter : blur(100px);
+    }
+    .sidebar a {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: white;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #575757;
+    }
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+      padding: 10px 15px;
+    }
+    .menu-icon:hover{
+        color : rgba(47, 255, 71, 0.562);
+    }
+    .close-btn {
+      font-size: 15px;
+      cursor: pointer;
+      padding: 10px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .close-btn:hover {
+      color: greenyellow;
+        animation: glow 1s infinite alternate;
+    }
+    @keyframes glow{
+        0% { box-shadow: 0 0 10px red; }
+            100% { box-shadow: 0 0 30px red; }
+    }
+    .topbar {
+      background: #2196f3;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-image:url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fGhlYWx0aHxlbnwwfHx8fDE2OTY5NzE3NTg&ixlib=rb-4.0.3&q=80&w=1080');
+      background-size: cover;
+    }
+    .main {
+      margin-left: 0;
+      padding: 20px;
+      transition: margin-left 0.3s;
+    }
+    .sidebar-open .sidebar {
+      left: 0;
+    }
+    .sidebar-open .main {
+      margin-left: 250px;
+    }
+    .element{
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: block;
+        transition: background-color 0.3s ease;
+    }
+    .element:hover{
+        color: cyan;
+    }
+    #display{
+    max-height: 600px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      background: var(--card);
+      margin-bottom: 1.5rem;
+      position: absolute;
+        top: 100px;
+      right: 100px;
+      width: 600px;
+      animation: glow 1s infinite alternate;
+}
+.toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.2rem;
+      position: absolute;
+      right: 2px;
+    }
+
+    .toggle-switch input {
+      width: 40px;
+      height: 20px;
+      appearance: none;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch input:checked {
+      background: #2196f3;
+    }
+
+    .toggle-switch input::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch input:checked::before {
+      transform: translateX(20px);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="menu-icon" onclick="toggleSidebar()">☰</span>
+    <h1 style="margin: 0 0 0 10px;">Health</h1>
+    <div class="toggle-switch">
+        <span id="theme-icon">🌞</span>
+        <label>
+          <input type="checkbox" id="modeToggle">
+        </label>
+      </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="closeSidebar()">CLOSE</span>
+    <a href="#" class="element">Home</a>
+    <a href="#" class="element">Doctors</a>
+    <a href="#" class="element">Hospitals</a>
+    <a href="#" class="element">Appointments</a>
+    <a href="#" class="element">Contact</a>
+  </div>
+
+  <div class="main" id="mainContent">
+    <section class="hero">
+      <h1>Welcome to the Health Directory</h1>
+    </section>
+ 
+    <div id="display">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore blanditiis qui saepe illo tempore dolorem dicta nihil natus quae iste ut debitis laboriosam vel fuga omnis explicabo provident, cupiditate aspernatur dolor aut totam nesciunt repudiandae minus molestiae? Voluptatibus incidunt quidem beatae distinctio aspernatur, debitis architecto. Commodi qui, laudantium molestiae, eveniet iusto possimus autem mollitia excepturi quasi deleniti doloremque voluptas magnam nisi quae in, at ea voluptatem debitis. Magni dolorem aliquid voluptate a quaerat odit eius, pariatur neque voluptatum placeat laudantium expedita culpa quod hic tempora atque doloremque cum eligendi! Eius incidunt perferendis maiores impedit nostrum, ducimus excepturi ullam ex voluptates itaque, aliquid ad saepe cumque amet eaque repellat perspiciatis quisquam sapiente odit provident ea tenetur expedita distinctio. Officia repudiandae unde, natus aliquid libero numquam velit quia possimus magni, voluptatum aperiam magnam! Magnam quos consequatur molestiae architecto adipisci modi natus quae voluptates repellendus. Totam provident hic, porro, soluta placeat architecto optio et velit cum dolore quae aliquam impedit. Iusto tempora, dolor voluptatum aliquid sequi sint explicabo magnam. Excepturi ipsum atque eligendi laboriosam quasi error placeat aperiam, voluptatem similique iusto recusandae ullam quas debitis distinctio, tenetur vitae aliquam libero? Tenetur eum mollitia, nesciunt incidunt deleniti ab quos fuga. Eum, explicabo sunt cumque consectetur iusto modi ratione, natus debitis ad optio at nulla nihil aliquam cum omnis fuga officia error distinctio odio ipsa nam quasi veniam vero. Odit dolor aliquid accusamus illum est incidunt vero distinctio maiores itaque facilis rerum, at, illo reiciendis quidem dolore modi soluta rem eaque debitis voluptates ratione quae! Asperiores, distinctio facere quisquam officiis nihil dolores. Pariatur ipsam aperiam aut fugiat quas ratione, soluta temporibus magnam quidem nemo at fuga nihil hic cumque veritatis officia harum, non quaerat enim in placeat incidunt accusantium possimus. Laborum molestiae voluptas dolorum unde tempora incidunt voluptate tenetur assumenda, molestias ex impedit corrupti, laboriosam necessitatibus hic corporis sit ipsam velit ducimus fuga. Atque doloribus accusantium error fugiat ducimus deleniti id alias iste dolorem quis obcaecati nesciunt facilis omnis autem repudiandae, porro libero odio voluptas nemo eaque. Modi qui aut obcaecati rerum, repellat adipisci impedit explicabo quo quam consequatur veritatis unde provident magni saepe dolor excepturi hic ipsum. Asperiores, nobis recusandae doloribus veniam laudantium magni dolorem optio explicabo itaque odit praesentium? Optio officiis debitis repellendus. Error beatae ab, libero accusantium, nulla, velit nisi quos maxime non omnis vel voluptatibus alias impedit illum? Et quibusdam quod inventore cupiditate fugit illo nihil sequi possimus ducimus nesciunt impedit dolorem alias iste, magnam, recusandae ipsum quia nostrum repellat, iusto minus dignissimos aperiam non esse! Aspernatur eligendi, officia quis omnis esse harum numquam iusto corporis qui eius veniam odit error tempora, nemo ex, recusandae non voluptate dolorum. Tenetur, architecto. Est accusamus error at quod ratione, labore ab fuga inventore perspiciatis cupiditate, suscipit ipsa culpa! Culpa officiis laudantium ipsam vel sint iusto hic dolorem repellendus quis deleniti laborum reprehenderit exercitationem, quo iure atque eius illo assumenda tempore. Ullam impedit veritatis veniam. Fugiat autem earum quisquam hic asperiores at aspernatur suscipit ipsa saepe quae eveniet veniam quo laboriosam dolorum, reiciendis sint! Incidunt?</p>
+    </div>
+  
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-open');
+    }
+
+    function closeSidebar() {
+      document.body.classList.remove('sidebar-open');
+    }
+    const modeToggle = document.getElementById('modeToggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateThemeIcon() {
+      themeIcon.textContent = document.body.classList.contains('dark') ? '🌙' : '🌞';
+    }
+
+    document.body.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
+    modeToggle.checked = document.body.classList.contains('dark');
+    updateThemeIcon();
+
+    modeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeIcon();
+    });
+  </script>
+</body>
+</html>
