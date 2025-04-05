@@ -1,11 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat with Gemini</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: white;
+      --text: #2c3e50;
+      --bubble-user: #d1eaff;
+      --bubble-bot: #f1f8e9;
+      --button: #2196f3;
+      --chip: #e3f2fd;
+      --chip-border: #64b5f6;
+    }
+
+    body.dark {
+      --bg: #1e1e1e;
+      --card: #2a2a2a;
+      --text: #f5f5f5;
+      --bubble-user: #1565c0;
+      --bubble-bot: #33691e;
+      --button: #42a5f5;
+      --chip: #263238;
+      --chip-border: #90caf9;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 10px 16px;
+    }
+
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.2rem;
+    }
+
+    .toggle-switch input {
+      width: 40px;
+      height: 20px;
+      appearance: none;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch input:checked {
+      background: #2196f3;
+    }
+
+    .toggle-switch input::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch input:checked::before {
+      transform: translateX(20px);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2b7cff;
+    }
+
+    #chatbox {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      background: var(--card);
+      margin-bottom: 1.5rem;
+    }
+
+    .msg-block {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .msg-block.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin: 0 10px;
+    }
+
+    .msg-bubble {
+      background: var(--bubble-bot);
+      padding: 10px 15px;
+      border-radius: 12px;
+      max-width: 70%;
+    }
+
+    .msg-block.user .msg-bubble {
+      background: var(--bubble-user);
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 5px;
+      padding: 5px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #aaa;
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+
+    .question-list {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 10px;
+      padding: 10px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+
+    .question-list::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .question-list::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+
+    .question-btn {
+      flex: 0 0 auto;
+      padding: 8px 14px;
+      background-color: var(--chip);
+      border: 1px solid var(--chip-border);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .question-btn:hover {
+      background-color: rgba(0, 225, 255, 0.534);
+    }
+
+  </style>
 </head>
 <body>
-    <h1> Hello niggesh</h1>
+  <div class="chat-container">
+    <div class="top-bar">
+      <div class="toggle-switch">
+        <span id="theme-icon">🌞</span>
+        <label>
+          <input type="checkbox" id="modeToggle">
+        </label>
+      </div>
+    </div>
+
+    <h1>🤖 Chat with Gemini</h1>
+
+    <div class="question-list" id="questionList">
+      <!-- Dynamic question buttons -->
+    </div>
+
+    <div id="chatbox"></div>
+  </div>
+
+  <script>
+    async function fetchQuestions() {
+      try {
+        const res = await fetch("http://localhost:4000/questions");
+        const questions = await res.json();
+        const questionList = document.getElementById("questionList");
+
+        questions.forEach((q) => {
+          const btn = document.createElement("button");
+          btn.classList.add("question-btn");
+          btn.textContent = q;
+          btn.onclick = () => handleQuestionClick(q);
+          questionList.appendChild(btn);
+        });
+      } catch (err) {
+        console.error("Failed to fetch questions", err);
+      }
+    }
+
+    async function handleQuestionClick(question) {
+      const chatbox = document.getElementById('chatbox');
+
+      // Show user message
+      chatbox.innerHTML += `
+        <div class="msg-block user">
+          <img class="avatar" src="user.jpg" alt="User Avatar">
+          <div class="msg-bubble"><b>You:</b> ${question}</div>
+        </div>`;
+
+      // Typing animation
+      const typingId = `typing-${Date.now()}`;
+      chatbox.innerHTML += `
+        <div class="msg-block bot" id="${typingId}">
+          <img class="avatar" src="robo.webp" alt="Bot Avatar">
+          <div class="msg-bubble">
+            <div class="typing-dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>`;
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      try {
+        const response = await fetch('http://localhost:4000/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: question })
+        });
+
+        const data = await response.json();
+
+        document.getElementById(typingId)?.remove();
+        chatbox.innerHTML += `
+          <div class="msg-block bot">
+            <img class="avatar" src="robo.webp" alt="Bot Avatar">
+            <div class="msg-bubble"><b>Bot:</b> ${data.reply}</div>
+          </div>`;
+      } catch (error) {
+        document.getElementById(typingId)?.remove();
+        chatbox.innerHTML += `
+          <div class="msg-block bot error">
+            <img class="avatar" src="robo.webp" alt="Bot Avatar">
+            <div class="msg-bubble"><b>Bot:</b> Error connecting to server</div>
+          </div>`;
+        console.error("Error:", error);
+      }
+
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    // Theme toggle logic
+    const modeToggle = document.getElementById('modeToggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateThemeIcon() {
+      themeIcon.textContent = document.body.classList.contains('dark') ? '🌙' : '🌞';
+    }
+
+    document.body.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
+    modeToggle.checked = document.body.classList.contains('dark');
+    updateThemeIcon();
+
+    modeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeIcon();
+    });
+
+    fetchQuestions();
+  </script>
 </body>
 </html>
