@@ -22,26 +22,26 @@ app.listen(4000,() => {
 app.use(express.json());
 app.use(cors());
 app.post('/chat', async (req, res) => {
-    const userMessage = req.body.message; // Extract user input from frontend
-
-    if (!userMessage) {
-        return res.status(400).json({ error: "Message is required" });
-    }
-
+    const userMessage = req.body.message;
+  
     try {
-        const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          contents: [
             {
-                contents: [{ parts: [{ text: userMessage }] }]
+              parts: [{ text: userMessage }]
             }
-        );
-
-        const botReply = response.data.candidates[0]?.content?.parts[0]?.text || "No response";
-        res.json({ reply: botReply });
-
+          ]
+        }
+      );
+  
+      const reply = response.data.candidates[0].content.parts[0].text;
+      res.json({ reply });
     } catch (error) {
-        console.error("Error fetching from Gemini API:", error);
-        res.status(500).json({ error: "Failed to connect to Gemini API" });
+      console.error('API error:', error.response?.data || error.message);
+      res.status(500).json({ error: 'Failed to fetch from Gemini API' });
     }
-});
+  });
+  
 

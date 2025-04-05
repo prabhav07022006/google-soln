@@ -3,33 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Chat with Gemini</title>
 </head>
 <body>
-    <h1> Hello niggesh</h1>
-    <div id="chatbox"></div>
+    <h1>Hello niggesh</h1>
+    <div id="chatbox" style="max-height: 300px; overflow-y: auto;"></div>
     <input type="text" id="userInput" placeholder="Type your message here">
     <button onclick="sendMessage()">Send</button> 
+
+    <script>
+        async function sendMessage() {
+            const userInputField = document.getElementById('userInput');
+            const userInput = userInputField.value;
+
+            if (!userInput.trim()) return;
+
+            // Show user message
+            document.getElementById('chatbox').innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+
+            try {
+                const response = await fetch('http://localhost:4000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userInput })
+                });
+
+                const data = await response.json();
+
+                // Show bot response
+                document.getElementById('chatbox').innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+            } catch (error) {
+                document.getElementById('chatbox').innerHTML += `<p><b>Bot:</b> Error connecting to server</p>`;
+                console.error("Error:", error);
+            }
+
+            // Clear input & scroll chatbox
+            userInputField.value = '';
+            const chatbox = document.getElementById('chatbox');
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
 </body>
-<script>
-    async function sendMessage() {
-    const userInput = document.getElementById('userInput').value;
-
-    if (!userInput.trim()) return;
-
-    const response = await fetch('http://localhost:4000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput })
-    });
-
-    const data = await response.json();
-    document.getElementById('chatbox').innerHTML += `<p><b>You:</b> ${userInput}</p>`;
-    document.getElementById('chatbox').innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
-}
-
-    // Optional: Clear the input field after sending the message
-    document.getElementById('userInput').value = '';
-    document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight; // Scroll to the bottom of the chatbox
-</script>
 </html>
