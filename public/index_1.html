@@ -28,5 +28,8 @@
     document.getElementById('chatbox').innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
 }
 
+    // Optional: Clear the input field after sending the message
+    document.getElementById('userInput').value = '';
+    document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight; // Scroll to the bottom of the chatbox
 </script>
 </html>
