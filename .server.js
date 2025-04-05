@@ -4,10 +4,12 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const axios = require('axios'); 
+const fuzz = require('fuzzball');
 const app = express();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 app.use(express.json());
 app.use(cors());
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -25,6 +27,8 @@ app.use(cors());
 app.get('/questions', (req, res) => {
   res.json(allowedQuestions);
 });
+
+
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
     const match = fuzz.extract(userMessage, allowedQuestions, { scorer: fuzz.token_set_ratio, returnObjects: true })[0];
