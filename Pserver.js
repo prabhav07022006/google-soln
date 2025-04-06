@@ -69,7 +69,7 @@ app.post('/create',async (req, res)=>{
 	try {
 		var body = req.body;
 		const check = await db.any('select * from userlog where email like ($1)', body.email);
-		if(check!=undefined||check!=null){
+		if(check[0]!==undefined){
 			console.log("user found", check);
 			res.redirect('/');
 		}else{
