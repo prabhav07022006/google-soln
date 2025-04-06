@@ -40,8 +40,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(trimmer);
 app.use(express.static(path.join(__dirname, 'public')));
+const url = process.env.MONGODB_URL;
 
-mongoose.connect('mongodb://127.0.0.1:27017/test')
+mongoose.connect('mongodb://127.0.0.1:27017/test',url)
 	.then(()=>{console.log('db connected')})
 
 function trimmer(req, res, next){
