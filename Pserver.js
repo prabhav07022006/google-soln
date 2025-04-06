@@ -16,7 +16,7 @@ const conn		 = {
 	user: 'postgres',
 	password: 'post',
 };
-const db			 = pgp(conn);
+const db	= pgp(conn);
 
 const allowedQuestions = [
     "What kind of diet should I follow?",
