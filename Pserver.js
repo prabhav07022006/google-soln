@@ -78,7 +78,7 @@ app.post('/create',async (req, res)=>{
 			res.redirect('/login');
 		}
 	} catch (error){
-		res.status(500).json("error happening UwU"+{message: error.message});
+		res.render('/login');
 	}
 })
 
