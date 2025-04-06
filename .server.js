@@ -4,37 +4,49 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const axios = require('axios'); 
-const fuzz = require('fuzzball');
 const app = express();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 app.use(express.json());
 app.use(cors());
-
-
+const fuzz = require('fuzzball');
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.set('view engine', 'ejs');
-
 app.get('/',(req,res) =>{
-	res.render('index_1')
+
+    const htmlfile=path.join(__dirname,'index.html')
+    res.sendFile(htmlfile);
 })  
 app.listen(4000,() => {
     console.log("Server is running");
 })
 
+const allowedQuestions = [
+    "What kind of diet should I follow?",
+  "Can you suggest a good diet plan?",
+  "What should I eat if I have diabetes?",
+  "Suggest foods good for high blood pressure.",
+  "What foods should I avoid for cholesterol?",
+  "Tell me some healthy eating tips.",
+  "What are the symptoms of a fever?",
+  "How can I stay fit and healthy?",
+  "Tell me some home remedies for cold.",
+  "What are the benefits of drinking water?",
+  "How much sleep is necessary for adults?",
+  "Can I exercise with a fever?",
+  "How can I boost my immunity?",
+  "What are the symptoms of COVID-19?",
+  "What should I eat for better digestion?"
+];
 app.use(express.json());
 app.use(cors());
 app.get('/questions', (req, res) => {
-  res.json(allowedQuestions);
-});
-
-
+    res.json(allowedQuestions);
+  });
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
     const match = fuzz.extract(userMessage, allowedQuestions, { scorer: fuzz.token_set_ratio, returnObjects: true })[0];
-    if (match.score < 80) {
-      return res.json({ reply: "Sorry, I can only answer specific questions." });
-    }
+  if (match.score < 80) {
+    return res.json({ reply: "Sorry, I can only answer specific questions." });
+  }
     try {
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -55,4 +67,3 @@ app.post('/chat', async (req, res) => {
     }
   });
   
-
