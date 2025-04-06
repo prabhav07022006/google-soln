@@ -116,9 +116,11 @@ app.get('/user', (req, res)=>{
 })
 
 app.get('/api/find', async (req, res)=>{
-	var ola = await user.find({});
+	var response = await user.find({});
 	console.log(ola);
-	res.render('index_1');
+	res.render('index_1', {
+		currMeds: response[0]
+	});
 })
 
 app.post('/chat', async (req, res) => {

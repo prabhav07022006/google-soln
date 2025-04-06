@@ -194,13 +194,24 @@
   <div class="main" id="mainContent">
     <section class="hero">
       <h1>Welcome to the Health Directory</h1>
-    </section>
- 
-    <div id="display">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore blanditiis qui saepe illo tempore dolorem dicta nihil natus quae iste ut debitis laboriosam vel fuga omnis explicabo provident, cupiditate aspernatur dolor aut totam nesciunt repudiandae minus molestiae? Voluptatibus incidunt quidem beatae distinctio aspernatur, debitis architecto. Commodi qui, laudantium molestiae, eveniet iusto possimus autem mollitia excepturi quasi deleniti doloremque voluptas magnam nisi quae in, at ea voluptatem debitis. Magni dolorem aliquid voluptate a quaerat odit eius, pariatur neque voluptatum placeat laudantium expedita culpa quod hic tempora atque doloremque cum eligendi! Eius incidunt perferendis maiores impedit nostrum, ducimus excepturi ullam ex voluptates itaque, aliquid ad saepe cumque amet eaque repellat perspiciatis quisquam sapiente odit provident ea tenetur expedita distinctio. Officia repudiandae unde, natus aliquid libero numquam velit quia possimus magni, voluptatum aperiam magnam! Magnam quos consequatur molestiae architecto adipisci modi natus quae voluptates repellendus. Totam provident hic, porro, soluta placeat architecto optio et velit cum dolore quae aliquam impedit. Iusto tempora, dolor voluptatum aliquid sequi sint explicabo magnam. Excepturi ipsum atque eligendi laboriosam quasi error placeat aperiam, voluptatem similique iusto recusandae ullam quas debitis distinctio, tenetur vitae aliquam libero? Tenetur eum mollitia, nesciunt incidunt deleniti ab quos fuga. Eum, explicabo sunt cumque consectetur iusto modi ratione, natus debitis ad optio at nulla nihil aliquam cum omnis fuga officia error distinctio odio ipsa nam quasi veniam vero. Odit dolor aliquid accusamus illum est incidunt vero distinctio maiores itaque facilis rerum, at, illo reiciendis quidem dolore modi soluta rem eaque debitis voluptates ratione quae! Asperiores, distinctio facere quisquam officiis nihil dolores. Pariatur ipsam aperiam aut fugiat quas ratione, soluta temporibus magnam quidem nemo at fuga nihil hic cumque veritatis officia harum, non quaerat enim in placeat incidunt accusantium possimus. Laborum molestiae voluptas dolorum unde tempora incidunt voluptate tenetur assumenda, molestias ex impedit corrupti, laboriosam necessitatibus hic corporis sit ipsam velit ducimus fuga. Atque doloribus accusantium error fugiat ducimus deleniti id alias iste dolorem quis obcaecati nesciunt facilis omnis autem repudiandae, porro libero odio voluptas nemo eaque. Modi qui aut obcaecati rerum, repellat adipisci impedit explicabo quo quam consequatur veritatis unde provident magni saepe dolor excepturi hic ipsum. Asperiores, nobis recusandae doloribus veniam laudantium magni dolorem optio explicabo itaque odit praesentium? Optio officiis debitis repellendus. Error beatae ab, libero accusantium, nulla, velit nisi quos maxime non omnis vel voluptatibus alias impedit illum? Et quibusdam quod inventore cupiditate fugit illo nihil sequi possimus ducimus nesciunt impedit dolorem alias iste, magnam, recusandae ipsum quia nostrum repellat, iusto minus dignissimos aperiam non esse! Aspernatur eligendi, officia quis omnis esse harum numquam iusto corporis qui eius veniam odit error tempora, nemo ex, recusandae non voluptate dolorum. Tenetur, architecto. Est accusamus error at quod ratione, labore ab fuga inventore perspiciatis cupiditate, suscipit ipsa culpa! Culpa officiis laudantium ipsam vel sint iusto hic dolorem repellendus quis deleniti laborum reprehenderit exercitationem, quo iure atque eius illo assumenda tempore. Ullam impedit veritatis veniam. Fugiat autem earum quisquam hic asperiores at aspernatur suscipit ipsa saepe quae eveniet veniam quo laboriosam dolorum, reiciendis sint! Incidunt?</p>
+			<h2>email : <%=email%></h2>
+			<button type="button" action="window.location.href='/aiChat'" >Chat to AI</button>
+		</section>
+
+		<div id="display">
+			<p><b>Current Medication : </b>
+			<%=currMeds%></p>
+			<hr>
+			<p><b>Current Diagonsis</b>
+			<%=currDiag%></p>
+			<hr>
+			<p><b>Past Mediaction</b>
+			<%=pastMeds%></p>
+			<hr>
+			<p><b>Past Diagonsis</b>
+			<%=pastDiag%></p>
     </div>
-  
-  </div>
+	</div>
 
   <script>
     function toggleSidebar() {
@@ -226,6 +237,7 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
       updateThemeIcon();
     });
+
   </script>
 </body>
 </html>

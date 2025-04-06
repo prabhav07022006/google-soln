@@ -1,5 +1,4 @@
 const express  = require('express');
-const uselog   = require('./db');
 const app			 = express();
 const { type } = require('os');
 const cors     = require('cors');
@@ -64,6 +63,8 @@ app.get('/', (req, res)=>{
 	res.redirect('/login');
 })
 
+
+
 app.post('/create',async (req, res)=>{
 	console.log(req.body);
 	try {
@@ -74,29 +75,33 @@ app.post('/create',async (req, res)=>{
 			res.redirect('/');
 		}else{
 			const ret = await db.none('insert into userlog(email, passwd) values($1, $2)',[body.email, body.password]);
-			res.redirect('/user');
+			res.redirect('/login');
 		}
 	} catch (error){
 		res.status(500).json("error happening UwU"+{message: error.message});
 	}
 })
 
+
 app.get('/login', (req, res)=>{
 	res.render('index');
 })
+
+
 
 app.get('/questions', (req, res) => {
   res.json(allowedQuestions);
 });
 
+
+
 app.post('/login',async (req, res)=>{
-	var body = req.body;
-	console.log(body);
+	const ID = req.body.emaiL;
 	try {
-		const check = await db.any("SELECT passwd from userlog Where email like($1)", [req.body.emaiL]);
+		const check = await db.any("SELECT passwd from userlog Where email like($1)", [ID]);
 		if(check[0].passwd==req.body.passworD){
 			console.log("logged in");
-			res.redirect("/user");
+			res.redirect(`/user/${ID}`);
 		}
 	} catch (error) {
 		console.log(error);
@@ -104,9 +109,33 @@ app.post('/login',async (req, res)=>{
 	}
 })
 
-app.get('/user', (req, res)=>{
-	res.render('index_1');
+
+
+app.get('/user/:id',async (req, res)=>{
+	const id = req.params.id;
+	const check = await db.any("SELECT * from userdata where email like($1)", [id]);
+	const response = await check[0];
+	if(check[0].email!==undefined){
+		res.render('home', {
+			currMeds: response.currmeds,
+			currDiag: response.currdiag,
+			pastMeds: response.pastmeds,
+			pastDiag: response.pastdiag,
+			email: response.email,
+		});
+	}else{
+		res.render('home', {
+			currMeds: "internal error",
+			currDiag: "internal error",
+			pastMeds: "internal error",
+			pastDiag: "inernal error",
+			email: "inernal error",
+
+		})
+	}
 })
+
+
 
 app.post('/chat', async (req, res) => {
   const userMessage = req.body.message;
@@ -132,6 +161,11 @@ app.post('/chat', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch from Gemini API' });
   }
 });
+
+app.get('/aiChat', (req, res)=>{
+	res.render('index_1');
+})
+
 
 app.listen(4000, ()=>{
 	console.log("server is running");
