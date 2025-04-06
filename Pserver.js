@@ -163,7 +163,7 @@ app.post('/chat', async (req, res) => {
 });
 
 app.get('/aiChat', (req, res)=>{
-	res.render('index_1');
+	res.render('niggesh');
 })
 
 
