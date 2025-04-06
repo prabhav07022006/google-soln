@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon MainServer.js"
+    "start": "nodemon Pserver.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,8 @@
     "fuzzball": "^2.2.2",
     "nodemon": "^3.1.9",
     "path": "^0.12.7",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "pg-promise": "^11.13.0"
   },
   "type": "commonjs"
 }

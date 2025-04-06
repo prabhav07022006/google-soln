@@ -1,13 +1,23 @@
 const express  = require('express');
-const app      = express();
-const path     = require('path');
+const uselog   = require('./db');
+const app			 = express();
 const { type } = require('os');
 const cors     = require('cors');
 const axios    = require('axios');
 const fuzz     = require('fuzzball');
-const Pool		 = require('pg');
-const user		 = require("./db");
+const path     = require('path');
+const { database, password } = require('pg/lib/defaults');
+const pgp			 = require('pg-promise')();
+require('dotenv').config();
 
+const conn		 = {
+	host: 'localhost',
+	port: 5432,
+	database: 'testdb',
+	user: 'postgres',
+	password: 'post',
+};
+const db			 = pgp(conn);
 
 const allowedQuestions = [
     "What kind of diet should I follow?",
@@ -32,14 +42,10 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 app.use(express.json());
 app.use(cors());
 
-require('dotenv').config();
 app.use(express.static(path.join(__dirname, 'public')));
-
-
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(trimmer);
-app.use(express.static(path.join(__dirname, 'public')));
 
 function trimmer(req, res, next){
 	if(req.method == 'POST'){
@@ -62,16 +68,14 @@ app.post('/create',async (req, res)=>{
 	console.log(req.body);
 	try {
 		var body = req.body;
-		const ola = await user.query("SELECT * FROM userlog");
-		console.log(ola);
-		//if(ola!=undefined){
-			//console.log("user exists");
-			//res.redirect('/');
-		//}else{
-			//user.create(body);
-			//console.log("user created safely");
-			//res.redirect('/login');
-		//} 
+		const check = await db.any('select * from userlog where email like ($1)', body.email);
+		if(check!=undefined||check!=null){
+			console.log("user found", check);
+			res.redirect('/');
+		}else{
+			const ret = await db.none('insert into userlog(email, passwd) values($1, $2)',[body.email, body.password]);
+			res.redirect('/user');
+		}
 	} catch (error){
 		res.status(500).json("error happening UwU"+{message: error.message});
 	}
@@ -86,24 +90,13 @@ app.get('/questions', (req, res) => {
 });
 
 app.post('/login',async (req, res)=>{
-	console.log(req.body);
+	var body = req.body;
+	console.log(body);
 	try {
-		if(req.body.emaiL!=undefined){
-			const db_data = await user.find({"email":req.body.emaiL});
-			if(db_data!=undefined){
-				if(req.body.passworD==db_data[0].password){
-					console.log('you logged in');
-					res.redirect('/user');
-				}else{
-					res.redirect('/login');
-					console.log('wrong password');
-				}
-			}else{
-				console.log('no such user');
-			}
-		}else{
-			console.log("invalid input");
-			res.redirect('/login');
+		const check = await db.any("SELECT passwd from userlog Where email like($1)", [req.body.emaiL]);
+		if(check[0].passwd==req.body.passworD){
+			console.log("logged in");
+			res.redirect("/user");
 		}
 	} catch (error) {
 		console.log(error);
@@ -112,12 +105,6 @@ app.post('/login',async (req, res)=>{
 })
 
 app.get('/user', (req, res)=>{
-	res.render('index_1');
-})
-
-app.get('/api/find', async (req, res)=>{
-	var ola = await user.find({});
-	console.log(ola);
 	res.render('index_1');
 })
 
@@ -145,7 +132,6 @@ app.post('/chat', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch from Gemini API' });
   }
 });
-
 
 app.listen(4000, ()=>{
 	console.log("server is running");
